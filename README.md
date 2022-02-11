@@ -35,7 +35,7 @@ p.parseQuery(query)
 ```
 
 This will output:
-```dict
+```python
 {
     'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc/crm'},
     'select': ['subject', 'identifier'],
