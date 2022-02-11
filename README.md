@@ -16,6 +16,8 @@ pip install sari-sparql-parser
 Parse a SPARQL query:
 
 ```python
+from sariSparqlParser import parser
+
 query = """PREFIX crm: <http://www.cidoc-crm.org/cidoc/crm>
     SELECT ?subject ?identifier WHERE {
         ?subject crm:P1_is_identified_by ?identifier .
@@ -26,7 +28,6 @@ query = """PREFIX crm: <http://www.cidoc-crm.org/cidoc/crm>
         }
     }
 """
-from sariSparqlParser import parser
 p = parser()
 p.parseQuery(query)
 ```
