@@ -1,4 +1,4 @@
-class SARISparqlParser():
+class parser():
 
     def parseQuery(self, query):
         """
@@ -11,7 +11,7 @@ class SARISparqlParser():
             - values: A list of values that are used in the VALUES clause
 
         >>> query = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s WHERE { ?s crm:P1_is_identified_by ?o }"
-        >>> q = SARISparqlParser()
+        >>> q = parser()
         >>> q.parseQuery(query)
         {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': []}
 
@@ -34,6 +34,23 @@ class SARISparqlParser():
         }
     
     def parseUpdate(self, update):
+        """
+        Parse a SPARQL update.
+        :param update: The update to parse
+        :return: A dictionary with the following keys:
+            - prefixes: A dictionary with the prefixes used in the update
+            - where: A list of triples that are used in the WHERE clause
+            - values: A list of values that are used in the VALUES clause
+
+        >>> update = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o }"
+        >>> u = parser()
+        >>> u.parseUpdate(update)
+        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': []}
+
+        >>> update = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
+        >>> u.parseUpdate(update)
+        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+        """
         from rdflib.plugins.sparql.parser import parseUpdate
         try:
             parsedUpdate = parseUpdate(update)
