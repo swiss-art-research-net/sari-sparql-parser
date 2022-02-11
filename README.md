@@ -1,6 +1,8 @@
 # SARI Sparql Parser
 
-A parser for SPARQL queries and updates
+A parser for SPARQL queries and updates.
+
+Note: This parser is very experimental and may not function very reliably.
 
 ## Installation
 
