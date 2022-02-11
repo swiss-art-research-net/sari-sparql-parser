@@ -21,7 +21,7 @@ class parser():
 
         >>> query3 = "SELECT ?s ?o WHERE { ?s <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?o . ?o a ?type . VALUES (?type) { (<http://www.cidoc-crm.org/cidoc-crm/E41_Appellation>) (<http://www.cidoc-crm.org/cidoc-crm/E42_Identifier>) } }"
         >>> q.parseQuery(query3)
-        {'prefixes': [], 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+        {'prefixes': {}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
         """
         from rdflib.plugins.sparql.parser import parseQuery
         try:
@@ -57,7 +57,11 @@ class parser():
 
         >>> update3 = 'INSERT { ?s ?p ?o } WHERE { VALUES (?type ?imageId ?region_by_px ) { ("updateImageRegion" "1234" "[1,2,3,4]") } }'
         >>> u.parseUpdate(update3)
-        {'prefixes': [], 'where': [], 'values': [{'type': {'type': <class 'rdflib.term.Literal'>, 'value': 'updateImageRegion'}, 'imageId': {'type': <class 'rdflib.term.Literal'>, 'value': '1234'}, 'region_by_px': {'type': <class 'rdflib.term.Literal'>, 'value': '[1,2,3,4]'}}]}
+        {'prefixes': {}, 'where': [], 'values': [{'type': {'type': <class 'rdflib.term.Literal'>, 'value': 'updateImageRegion'}, 'imageId': {'type': <class 'rdflib.term.Literal'>, 'value': '1234'}, 'region_by_px': {'type': <class 'rdflib.term.Literal'>, 'value': '[1,2,3,4]'}}]}
+        
+        >>> update4 = 'PREFIX : <http://www.metaphacts.com/resource/> INSERT { :s :p :o. } WHERE { VALUES (?type ?image_id ?iiif_url ?regionByPx) { ("updateImageRegion" 206509  <https://bso-iiif.swissartresearch.net/iiif/2/nb-481644> "1075,448,4714,3284") } }'
+        >>> u.parseUpdate(update4)
+        {'prefixes': {':': 'http://www.metaphacts.com/resource/'}, 'where': [], 'values': [{'type': {'type': <class 'rdflib.term.Literal'>, 'value': 'updateImageRegion'}, 'image_id': {'type': <class 'rdflib.term.URIRef'>, 'value': '206509'}, 'iiif_url': {'type': <class 'rdflib.term.URIRef'>, 'value': 'https://bso-iiif.swissartresearch.net/iiif/2/nb-481644'}, 'regionByPx': {'type': <class 'rdflib.term.Literal'>, 'value': '1075,448,4714,3284'}}]}
         """
         from rdflib.plugins.sparql.parser import parseUpdate
         try:
@@ -88,17 +92,22 @@ class parser():
 
     def _getPrefixes(self, parserOutput):
         from pyparsing import ParseResults
+        prefixesRaw = []
         try:
             if type(parserOutput) is ParseResults and 'prefix' in parserOutput[0][0]:
                 prefixesRaw = parserOutput[0]
-            if 'prologue' in parserOutput and 'prefix' in parserOutput['prologue'][0][0]:
+            if 'prologue' in parserOutput:
                 prefixesRaw = parserOutput['prologue'][0]
         except:
             # No Prefixes
-            return []
+            return {}
+        
         prefixes = {}
         for d in prefixesRaw:
-            prefixes[d['prefix']] = str(d['iri'])
+            if 'prefix' in d:
+                prefixes[d['prefix']] = str(d['iri'])
+            else:
+                prefixes[':'] = str(d['iri'])
         return prefixes
     
     def _getProjectionVariables(self, parsedQuery):
@@ -138,12 +147,12 @@ class parser():
             return str(term['string'])
         return False
 
-    def _parseTriples(self, parsedOutput):
+    def _parseTriples(self, parserOutput):
         from math import floor
-        prefixes = self._getPrefixes(parsedOutput)
+        prefixes = self._getPrefixes(parserOutput)
         triples = []
         try:
-            triplesRaw = self._extractWhereTriples(parsedOutput)
+            triplesRaw = self._extractWhereTriples(parserOutput)
         except:
             # No triples
             return []
