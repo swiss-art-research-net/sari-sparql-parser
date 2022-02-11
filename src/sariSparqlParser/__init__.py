@@ -10,14 +10,18 @@ class parser():
             - where: A list of triples that are used in the WHERE clause
             - values: A list of values that are used in the VALUES clause
 
-        >>> query = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s WHERE { ?s crm:P1_is_identified_by ?o }"
+        >>> query1 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s WHERE { ?s crm:P1_is_identified_by ?o }"
         >>> q = parser()
-        >>> q.parseQuery(query)
+        >>> q.parseQuery(query1)
         {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': []}
 
-        >>> query = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s ?o WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
-        >>> q.parseQuery(query)
+        >>> query2 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s ?o WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
+        >>> q.parseQuery(query2)
         {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+
+        >>> query3 = "SELECT ?s ?o WHERE { ?s <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?o . ?o a ?type . VALUES (?type) { (<http://www.cidoc-crm.org/cidoc-crm/E41_Appellation>) (<http://www.cidoc-crm.org/cidoc-crm/E42_Identifier>) } }"
+        >>> q.parseQuery(query3)
+        {'prefixes': [], 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
         """
         from rdflib.plugins.sparql.parser import parseQuery
         try:
@@ -42,14 +46,18 @@ class parser():
             - where: A list of triples that are used in the WHERE clause
             - values: A list of values that are used in the VALUES clause
 
-        >>> update = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o }"
+        >>> update1 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o }"
         >>> u = parser()
-        >>> u.parseUpdate(update)
+        >>> u.parseUpdate(update1)
         {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': []}
 
-        >>> update = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
-        >>> u.parseUpdate(update)
+        >>> update2 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> INSERT { ?s crm:P1_is_identified_by ?o } WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
+        >>> u.parseUpdate(update2)
         {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+
+        >>> update3 = 'INSERT { ?s ?p ?o } WHERE { VALUES (?type ?imageId ?region_by_px ) { ("updateImageRegion" "1234" "[1,2,3,4]") } }'
+        >>> u.parseUpdate(update3)
+        {'prefixes': [], 'where': [], 'values': [{'type': {'type': <class 'rdflib.term.Literal'>, 'value': 'updateImageRegion'}, 'imageId': {'type': <class 'rdflib.term.Literal'>, 'value': '1234'}, 'region_by_px': {'type': <class 'rdflib.term.Literal'>, 'value': '[1,2,3,4]'}}]}
         """
         from rdflib.plugins.sparql.parser import parseUpdate
         try:
@@ -80,10 +88,14 @@ class parser():
 
     def _getPrefixes(self, parserOutput):
         from pyparsing import ParseResults
-        if type(parserOutput) is ParseResults and 'prefix' in parserOutput[0][0]:
-            prefixesRaw = parserOutput[0]
-        if 'prologue' in parserOutput and 'prefix' in parserOutput['prologue'][0][0]:
-            prefixesRaw = parserOutput['prologue'][0]
+        try:
+            if type(parserOutput) is ParseResults and 'prefix' in parserOutput[0][0]:
+                prefixesRaw = parserOutput[0]
+            if 'prologue' in parserOutput and 'prefix' in parserOutput['prologue'][0][0]:
+                prefixesRaw = parserOutput['prologue'][0]
+        except:
+            # No Prefixes
+            return []
         prefixes = {}
         for d in prefixesRaw:
             prefixes[d['prefix']] = str(d['iri'])
@@ -130,7 +142,11 @@ class parser():
         from math import floor
         prefixes = self._getPrefixes(parsedOutput)
         triples = []
-        triplesRaw = self._extractWhereTriples(parsedOutput)
+        try:
+            triplesRaw = self._extractWhereTriples(parsedOutput)
+        except:
+            # No triples
+            return []
         iteration = 0
         prevSet = 0
         prevIteration = 0
@@ -169,13 +185,16 @@ class parser():
         from pyparsing import ParseResults
         prefixes = self._getPrefixes(parserOutput)
         
+        
         try:
             if type(parserOutput) is ParseResults:
-                valuesRaw = parserOutput.asList()[1]['where']['part'][1]
+                valuesRaw = parserOutput.asList()[1]['where']['part'][1] if len(parserOutput.asList()) > 1 else parserOutput.asList()[0]['where']['part'][1]
             else:
-                valuesRaw = parserOutput['request'][0]['where']['part'][1]
+                valuesRaw = parserOutput['request'][0]['where']['part'][1] if len(parserOutput['request'][0]['where']['part']) > 1 else parserOutput['request'][0]['where']['part'][0]
         except:
-            # No values present
+            return []
+            
+        if not valuesRaw or not 'var' in valuesRaw:
             return []
         keys = {}
         for i, v in enumerate(valuesRaw['var']):

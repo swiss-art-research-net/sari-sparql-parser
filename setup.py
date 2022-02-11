@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
     name="sari-sparql-parser",
-    version="0.0.1",
+    version="0.0.3",
     author="Florian Kräutli",
     author_email="florian.kraeutli@uzh.ch",
     description="A library for parsing SPARQL queries and updates",
