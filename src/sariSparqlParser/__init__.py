@@ -13,15 +13,15 @@ class parser():
         >>> query1 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s WHERE { ?s crm:P1_is_identified_by ?o }"
         >>> q = parser()
         >>> q.parseQuery(query1)
-        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': []}
+        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}], 'values': [], 'limitOffset': False}
 
-        >>> query2 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s ?o WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } }"
+        >>> query2 = "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> SELECT ?s ?o WHERE { ?s crm:P1_is_identified_by ?o . ?o a ?type . VALUES (?type) { (crm:E41_Appellation) (crm:E42_Identifier) } } LIMIT 10"
         >>> q.parseQuery(query2)
-        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+        {'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}], 'limitOffset': {'limit': 10}}
 
-        >>> query3 = "SELECT ?s ?o WHERE { ?s <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?o . ?o a ?type . VALUES (?type) { (<http://www.cidoc-crm.org/cidoc-crm/E41_Appellation>) (<http://www.cidoc-crm.org/cidoc-crm/E42_Identifier>) } }"
+        >>> query3 = "SELECT ?s ?o WHERE { ?s <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?o . ?o a ?type . VALUES (?type) { (<http://www.cidoc-crm.org/cidoc-crm/E41_Appellation>) (<http://www.cidoc-crm.org/cidoc-crm/E42_Identifier>) } } LIMIT 10 OFFSET 100"
         >>> q.parseQuery(query3)
-        {'prefixes': {}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}]}
+        {'prefixes': {}, 'select': ['s', 'o'], 'where': [{'s': {'type': <class 'rdflib.term.Variable'>, 'value': 's'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}}, {'s': {'type': <class 'rdflib.term.Variable'>, 'value': 'o'}, 'p': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}, 'o': {'type': <class 'rdflib.term.Variable'>, 'value': 'type'}}], 'values': [{'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}}, {'type': {'type': <class 'rdflib.term.URIRef'>, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}}], 'limitOffset': {'limit': 10, 'offset': 100}}
         """
         from rdflib.plugins.sparql.parser import parseQuery
         try:
@@ -34,7 +34,8 @@ class parser():
             "prefixes": self._getPrefixes(parsedQuery),
             "select": self._getProjectionVariables(parsedQuery),
             "where": self._parseTriples(parsedQuery),
-            "values": self._parseValues(parsedQuery)
+            "values": self._parseValues(parsedQuery),
+            "limitOffset": self._parseLimitOffset(parsedQuery)
         }
     
     def parseUpdate(self, update):
@@ -147,6 +148,21 @@ class parser():
             return str(term['string'])
         return False
 
+    def _parseLimitOffset(self, parserOutput):
+        limitOffset = False
+        response = {}
+        for d in parserOutput.asList():
+            if 'limitoffset' in d:
+                limitOffset = d['limitoffset']
+        if limitOffset == False:
+            return False
+        if 'limit' in limitOffset:
+            response['limit'] = int(limitOffset['limit'])
+        if 'offset' in limitOffset:
+            response['offset'] = int(limitOffset['offset'])
+        return response
+
+    
     def _parseTriples(self, parserOutput):
         from math import floor
         prefixes = self._getPrefixes(parserOutput)
