@@ -20,7 +20,7 @@ Parse a SPARQL query:
 ```python
 from sariSparqlParser import parser
 
-query = """PREFIX crm: <http://www.cidoc-crm.org/cidoc/crm>
+query = """PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
     SELECT ?subject ?identifier WHERE {
         ?subject crm:P1_is_identified_by ?identifier .
         ?identifier a ?type .
@@ -37,11 +37,11 @@ p.parseQuery(query)
 This will output:
 ```python
 {
-    'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc/crm'},
+    'prefixes': {'crm': 'http://www.cidoc-crm.org/cidoc-crm/'},
     'select': ['subject', 'identifier'],
     'where': [{
         's': {'type': rdflib.term.Variable, 'value': 'subject'},
-        'p': {'type': rdflib.term.URIRef, 'value': 'http://www.cidoc-crm.org/cidoc/crmP1_is_identified_by'},
+        'p': {'type': rdflib.term.URIRef, 'value': 'http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by'},
         'o': {'type': rdflib.term.Variable, 'value': 'identifier'}
     },
     {
@@ -50,10 +50,10 @@ This will output:
         'o': {'type': rdflib.term.Variable, 'value': 'type'}
     }],
     'values': [{
-        'type': {'type': rdflib.term.URIRef, 'value': 'http://www.cidoc-crm.org/cidoc/crmE41_Appellation'}
+        'type': {'type': rdflib.term.URIRef, 'value': 'http://www.cidoc-crm.org/cidoc-crm/E41_Appellation'}
     },
     {
-        'type': {'type': rdflib.term.URIRef,'value': 'http://www.cidoc-crm.org/cidoc/crmE42_Identifier'}
+        'type': {'type': rdflib.term.URIRef,'value': 'http://www.cidoc-crm.org/cidoc-crm/E42_Identifier'}
     }]
 }
 ```
